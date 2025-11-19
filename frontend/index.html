@@ -1,0 +1,122 @@
+=<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Expense Tracker — Modern</title>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="light">
+    <div class="app">
+
+        <!-- Top Navigation -->
+        <header class="topbar">
+            <div class="logo">Expense Tracker</div>
+
+            <nav class="nav">
+                <button class="nav-btn active" data-view="dashboard">Dashboard</button>
+                <button class="nav-btn" data-view="expenses">Expenses</button>
+                <button class="nav-btn" data-view="categories">Categories</button>
+                <button class="nav-btn" data-view="reports">Reports</button>
+            </nav>
+
+            <div class="actions">
+                <button id="themeToggle" class="btn-ghost">🌙</button>
+                <button id="exportCsv" class="btn">Export CSV</button>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT -->
+        <main class="container">
+
+            <!-- ------------------- DASHBOARD ------------------- -->
+            <section id="dashboard" class="view">
+                <div class="grid two">
+                    <div class="card summary">
+                        <h3>Total this month</h3>
+                        <div id="totalMonth" class="big">₹0</div>
+                        <div class="small">Average / day: <span id="avgDay">₹0</span></div>
+                    </div>
+
+                    <div class="card add-card">
+                        <h3>Add Expense</h3>
+                        <form id="addForm" class="stack">
+
+                            <input type="date" id="date" required>
+
+                            <select id="categorySelect" required></select>
+
+                            <input type="text" id="merchant" placeholder="Merchant" required>
+
+                            <input type="number" id="amount" placeholder="Amount" required>
+
+                            <input type="text" id="notes" placeholder="Notes (optional)">
+
+                            <div class="row">
+                                <button class="btn" type="submit">Add</button>
+                                <button class="btn-ghost" id="clearForm" type="button">Clear</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ------------------- EXPENSE LIST ------------------- -->
+            <section id="expenses" class="view hidden">
+                <h2>Expenses</h2>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Merchant</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expensesTable"></tbody>
+                </table>
+            </section>
+
+            <!-- ------------------- CATEGORIES ------------------- -->
+            <section id="categories" class="view hidden">
+                <h2>Categories</h2>
+
+                <div class="row">
+                    <input id="newCategory" placeholder="New category">
+                    <button id="addCategoryBtn" class="btn">Add</button>
+                </div>
+
+                <ul id="categoryList"></ul>
+            </section>
+
+            <!-- ------------------- REPORTS ------------------- -->
+            <section id="reports" class="view hidden">
+                <h2>Monthly Report</h2>
+
+                <div class="row">
+                    <input type="month" id="filterMonth">
+                    <button id="refreshReport" class="btn">Refresh</button>
+                </div>
+
+                <h3>Total: ₹<span id="reportTotal">0</span></h3>
+
+                <h3>Category Breakdown:</h3>
+                <ul id="reportCategories"></ul>
+
+                <h3>Daily Trend:</h3>
+                <ul id="reportDaily"></ul>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
