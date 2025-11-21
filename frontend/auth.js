@@ -1,70 +1,41 @@
-const API = "http://127.0.0.1:5000/api/auth";
+// Auto-detect backend URL
+const API = (location.hostname === "127.0.0.1" || location.hostname === "localhost")
+    ? "http://127.0.0.1:5000/api/auth"
+    : "/api/auth";
 
-// Save & load token helpers
-function saveToken(t){ localStorage.setItem("token", t); }
-function getToken(){ return localStorage.getItem("token"); }
+// Login handler
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-// If already logged in → go to dashboard
-if (getToken() && !window.location.href.includes("dashboard.html")) {
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    const res = await fetch(`${API}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        document.getElementById("loginError").textContent = data.error;
+        return;
+    }
+
+    // Save token
+    localStorage.setItem("token", data.token);
+
+    // Redirect to dashboard
     window.location.href = "dashboard.html";
+});
+
+// ---------------- LOGOUT ----------------
+const logoutBtn = document.querySelector("#logoutBtn");
+
+if (logoutBtn) {
+    logoutBtn.onclick = () => {
+        localStorage.removeItem("token");
+        window.location.href = "login.html";
+    };
 }
-
-// LOGIN
-const loginForm = document.querySelector("#loginForm");
-if (loginForm) {
-    loginForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const user = {
-            username: username.value,
-            password: password.value
-        };
-
-        const res = await fetch(`${API}/login`, {
-            method: "POST",
-            headers: {"Content-Type":"application/json"},
-            body: JSON.stringify(user)
-        });
-
-        const data = await res.json();
-
-        if (data.token) {
-            saveToken(data.token);
-            window.location.href = "dashboard.html";
-        } else {
-            loginError.textContent = data.error;
-        }
-    });
-}
-
-// REGISTER
-const registerForm = document.querySelector("#registerForm");
-if (registerForm) {
-    registerForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const user = {
-            username: r_username.value,
-            password: r_password.value
-        };
-
-        const res = await fetch(`${API}/register`, {
-            method: "POST",
-            headers: {"Content-Type":"application/json"},
-            body: JSON.stringify(user)
-        });
-
-        const data = await res.json();
-
-        if (data.message) {
-            alert("Account created! Login now.");
-            window.location.href = "index.html";
-        } else {
-            registerError.textContent = data.error;
-        }
-    });
-}
-document.querySelector("#logoutBtn").onclick = () => {
-    localStorage.removeItem("token");
-    window.location.href = "index.html";
-};
