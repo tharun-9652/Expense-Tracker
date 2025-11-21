@@ -1,3 +1,9 @@
+// ------------------- AUTH REDIRECT -------------------
+// Only protect dashboard (index.html)
+if (!localStorage.getItem("token") && window.location.pathname.includes("index.html")) {
+    window.location.href = "login.html";
+}
+
 // Auto-detect backend URL
 const API = (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost')
     ? "http://127.0.0.1:5000/api"
@@ -17,6 +23,7 @@ const views = {
 
 const navBtns = qsa(".nav-btn");
 
+// Month
 let currentMonth = new Date().toISOString().slice(0, 7);
 qs("#filterMonth").value = currentMonth;
 
@@ -32,7 +39,6 @@ function init() {
     refreshDashboard();
     bindReportRefresh();
 }
-
 init();
 
 
@@ -78,8 +84,9 @@ function setTheme(theme) {
 // ------------------- EXPENSES -------------------
 function bindAddExpenseForm() {
     const form = qs("#addForm");
+    const clearBtn = qs("#clearForm");
 
-    qs("#clearForm").addEventListener("click", () => form.reset());
+    clearBtn.addEventListener("click", () => form.reset());
 
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -94,7 +101,10 @@ function bindAddExpenseForm() {
 
         await fetch(`${API}/expenses`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("token")}`
+            },
             body: JSON.stringify(payload)
         });
 
@@ -105,7 +115,11 @@ function bindAddExpenseForm() {
 }
 
 async function loadExpensesTable() {
-    const r = await fetch(`${API}/expenses`);
+    const r = await fetch(`${API}/expenses`, {
+        headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`
+        }
+    });
     const data = await r.json();
 
     const tbody = qs("#expensesTable");
@@ -137,7 +151,10 @@ async function addCategory() {
 
     await fetch(`${API}/categories`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`
+        },
         body: JSON.stringify({ name })
     });
 
@@ -146,14 +163,16 @@ async function addCategory() {
 }
 
 async function loadCategories() {
-    const r = await fetch(`${API}/categories`);
+    const r = await fetch(`${API}/categories`, {
+        headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`
+        }
+    });
     const cats = await r.json();
 
-    // Fill dropdown in Add Expense
     const select = qs("#categorySelect");
     select.innerHTML = cats.map(c => `<option>${c.name}</option>`).join("");
 
-    // Fill category list view
     const list = qs("#categoryList");
     list.innerHTML = cats.map(c => `<li>${c.name}</li>`).join("");
 }
@@ -174,7 +193,11 @@ function normalizeMonth(v) {
 async function refreshReports() {
     const month = normalizeMonth(qs("#filterMonth").value);
 
-    const r = await fetch(`${API}/reports/monthly?month=${month}`);
+    const r = await fetch(`${API}/reports/monthly?month=${month}`, {
+        headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`
+        }
+    });
     const data = await r.json();
 
     qs("#reportTotal").textContent = data.total;
@@ -189,10 +212,24 @@ async function refreshReports() {
 
 // ------------------- DASHBOARD SUMMARY -------------------
 async function refreshDashboard() {
-    const month = currentMonth;
-    const r = await fetch(`${API}/reports/monthly?month=${month}`);
+    const r = await fetch(`${API}/reports/monthly?month=${currentMonth}`, {
+        headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`
+        }
+    });
     const data = await r.json();
 
     qs("#totalMonth").textContent = data.total;
     qs("#avgDay").textContent = Math.round(data.total / 30);
+}
+
+
+// ------------------- LOGOUT -------------------
+const logoutBtn = document.querySelector("#logoutBtn");
+
+if (logoutBtn) {
+    logoutBtn.onclick = () => {
+        localStorage.removeItem("token");
+        window.location.href = "login.html";
+    };
 }

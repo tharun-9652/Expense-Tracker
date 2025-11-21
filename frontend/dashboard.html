@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard – Expense Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js" defer></script>
+</head>
+
+<body class="light">
+
+<!-- TOP NAV -->
+<nav class="navbar">
+    <h2>Expense Tracker</h2>
+
+    <div class="nav-buttons">
+        <button class="nav-btn active" data-view="dashboard">Dashboard</button>
+        <button class="nav-btn" data-view="expenses">Expenses</button>
+        <button class="nav-btn" data-view="categories">Categories</button>
+        <button class="nav-btn" data-view="reports">Reports</button>
+        <button id="themeToggle" class="btn-ghost">🌙</button>
+        <button id="logoutBtn" class="btn-ghost">Logout</button>
+    </div>
+</nav>
+
+<!-- ================= VIEWS ================= -->
+
+<!-- DASHBOARD VIEW -->
+<section id="dashboard" class="view">
+    <div class="card big-card">
+        <h3>Total this month</h3>
+        <h1 id="totalMonth">0</h1>
+        <p>Average / day: <span id="avgDay">0</span></p>
+    </div>
+
+    <div class="card">
+        <h3>Add Expense</h3>
+
+        <form id="addForm" class="stack">
+            <input type="date" id="date" required>
+
+            <select id="categorySelect"></select>
+
+            <input type="text" id="merchant" placeholder="Merchant" required>
+
+            <input type="number" id="amount" placeholder="Amount" required>
+
+            <input type="text" id="notes" placeholder="Notes (optional)">
+
+            <div class="row">
+                <button type="submit" class="btn">Add</button>
+                <button type="button" id="clearForm" class="btn-ghost">Clear</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+
+<!-- EXPENSES VIEW -->
+<section id="expenses" class="view hidden">
+    <h3>Your Expenses</h3>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Merchant</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody id="expensesTable"></tbody>
+    </table>
+</section>
+
+
+<!-- CATEGORIES VIEW -->
+<section id="categories" class="view hidden">
+    <h3>Categories</h3>
+
+    <ul id="categoryList"></ul>
+
+    <div class="row" style="margin-top: 20px;">
+        <input type="text" id="newCategory" placeholder="New category">
+        <button id="addCategoryBtn" class="btn">Add</button>
+    </div>
+</section>
+
+
+<!-- REPORTS VIEW -->
+<section id="reports" class="view hidden">
+    <h3>Monthly Reports</h3>
+
+    <input type="month" id="filterMonth">
+    <button id="refreshReport" class="btn">Refresh</button>
+
+    <h4>Total: ₹<span id="reportTotal">0</span></h4>
+
+    <h4>By Category</h4>
+    <ul id="reportCategories"></ul>
+
+    <h4>Daily Breakdown</h4>
+    <ul id="reportDaily"></ul>
+</section>
+
+</body>
+</html>

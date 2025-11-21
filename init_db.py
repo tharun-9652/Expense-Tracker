@@ -8,12 +8,14 @@ CREATE TABLE IF NOT EXISTS expenses (
     category TEXT NOT NULL,
     merchant TEXT,
     notes TEXT,
+    user_id INTEGER NOT NULL,
     created_at TEXT DEFAULT (datetime('now'))
 );
 
 CREATE TABLE IF NOT EXISTS categories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT UNIQUE
+    username TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL
 );
 """
 

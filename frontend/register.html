@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register – Expense Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="light">
+
+<div class="auth-container">
+    <div class="auth-card">
+        <h2>Create Account</h2>
+
+        <form id="registerForm" class="stack">
+            <input type="text" id="r_username" placeholder="Username" required>
+            <input type="password" id="r_password" placeholder="Password" required>
+            <button class="btn" type="submit">Register</button>
+        </form>
+
+        <p>Already have an account? 
+            <a href="index.html">Login</a>
+        </p>
+
+        <p id="registerError" class="error"></p>
+    </div>
+</div>
+
+<script src="auth.js"></script>
+</body>
+</html>
